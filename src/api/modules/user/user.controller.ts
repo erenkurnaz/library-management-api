@@ -2,17 +2,19 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { QueryOrder } from '@mikro-orm/core';
 import { RolesGuard } from '../../../security/guards/roles.guard';
 import { Pagination, PaginationOptions, Roles } from '../../decorators';
 import { User, UserRole } from '../../../database/user';
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user-create.dto';
-import { QueryOrder } from '@mikro-orm/core';
 
 @Controller('users')
 @UseGuards(RolesGuard)
@@ -42,5 +44,14 @@ export class UserController {
   @Get(':userId')
   public async getById(@Param('userId') userId: string) {
     return await this.userService.findById(userId);
+  }
+
+  @Post(':userId/borrow/:bookId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async borrowBook(
+    @Param('userId') userId: string,
+    @Param('bookId') bookId: string,
+  ) {
+    await this.userService.validateAndBorrowBook(userId, bookId);
   }
 }

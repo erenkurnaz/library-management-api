@@ -53,3 +53,8 @@ export async function createUserBook({
 
   return createdUserBook;
 }
+
+export async function getUserBook({ user, book }) {
+  const userBookRepository = APP.get<UserBookRepository>(UserBookRepository);
+  return userBookRepository.findOne({ user, book });
+}

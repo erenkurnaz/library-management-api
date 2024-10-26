@@ -1,15 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { FilterQuery } from '@mikro-orm/core';
 import { User, UserRepository } from '../../../database/user';
 import { UserCreateDto } from './dto/user-create.dto';
 import { HashService } from '../../../security/services/hash.service';
 import { PaginatedResult, PaginationOptions } from '../../decorators';
 import { UserDetailResult } from './dto/user-detail.result';
+import { UserBookRepository } from '../../../database/user-book';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly userBookRepository: UserBookRepository,
     private readonly hashService: HashService,
   ) {}
 
@@ -54,5 +56,24 @@ export class UserService {
       fullName: userWithBorrowHistory.fullName,
       books: userWithBorrowHistory.borrowedBooks,
     };
+  }
+
+  public async validateAndBorrowBook(userId: string, bookId: string) {
+    const isBorrowed = await this.userBookRepository.checkExists({
+      book: bookId,
+      returnedAt: null,
+    });
+    if (isBorrowed)
+      throw new ConflictException(
+        'Book already borrowed. Please wait until returned.',
+      );
+
+    const createdUserBook = this.userBookRepository.create({
+      user: userId,
+      book: bookId,
+      borrowedAt: new Date(),
+    });
+    await this.userBookRepository.getEntityManager().flush();
+    return createdUserBook;
   }
 }

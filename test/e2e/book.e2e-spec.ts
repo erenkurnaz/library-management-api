@@ -36,7 +36,7 @@ describe('Book (e2e)', () => {
           expect(book.name).toEqual(requestBody.name);
         });
     });
-    it('should return 403 if the user is not an admin', async () => {
+    it('should return FORBIDDEN if the user is not an admin', async () => {
       const user = await createUser({ role: UserRole.USER });
       const token = await createToken({ id: user.id, email: user.email });
       const requestBody = new BookCreateDto();
@@ -177,7 +177,7 @@ describe('Book (e2e)', () => {
           expect(response.body.data.score).toEqual(-1);
         });
     });
-    it('should return 404 if book not exists', async () => {
+    it('should return NOT_FOUND if book not exists', async () => {
       const notExistsBookId = faker.string.uuid();
 
       return request(APP.getHttpServer())

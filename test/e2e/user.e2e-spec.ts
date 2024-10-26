@@ -7,6 +7,7 @@ import {
   createToken,
   createUser,
   createUserBook,
+  getUserBook,
 } from '../helpers/user.helper';
 import { UserRole } from '../../src/database/user';
 import { UserCreateDto } from '../../src/api/modules/user/dto/user-create.dto';
@@ -22,7 +23,7 @@ describe('User Management (e2e)', () => {
   });
 
   describe('Create User', () => {
-    it('should throw 403 if user is not an admin', async () => {
+    it('should return FORBIDDEN if user is not an admin', async () => {
       const user = await createUser({ role: UserRole.USER });
       const token = await createToken({ id: user.id, email: user.email });
       const requestBody = new UserCreateDto();
@@ -144,7 +145,7 @@ describe('User Management (e2e)', () => {
           });
         });
     });
-    it('should return 404 if user not exists', async () => {
+    it('should return NOT_FOUND if user not exists', async () => {
       const notExistsUserId = faker.string.uuid();
 
       return request(APP.getHttpServer())
@@ -157,6 +158,82 @@ describe('User Management (e2e)', () => {
           expect(response.body.error.name).toEqual('NotFoundException');
           expect(response.body.error.message).toEqual(
             `User not found ({ id: '${notExistsUserId}' })`,
+          );
+        });
+    });
+  });
+
+  describe('Borrow Book', () => {
+    it('should borrow a book successfully', async () => {
+      const book = await createBook({});
+      const user = await createUser({});
+      return request(APP.getHttpServer())
+        .post(`/users/${user.id}/borrow/${book.id}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .expect(HttpStatus.NO_CONTENT)
+        .expect(async (response) => {
+          expect(response.body.data).toBeUndefined();
+
+          const userBook = await getUserBook({ user, book });
+          expect(userBook).toBeDefined();
+          expect(userBook.borrowedAt).toBeDefined();
+          expect(userBook.user).toEqual(user);
+          expect(userBook.book).toEqual(book);
+        });
+    });
+    it('should return CONFLICT error if book already borrowed and not returned yet', async () => {
+      const book = await createBook({});
+      const user_already_borrow = await createUser({});
+      await createUserBook({
+        book,
+        user: user_already_borrow,
+      });
+      const user = await createUser({});
+
+      return request(APP.getHttpServer())
+        .post(`/users/${user.id}/borrow/${book.id}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .expect(HttpStatus.CONFLICT)
+        .expect((response) => {
+          expect(response.body.data).toBeNull();
+          expect(response.body.error.status).toEqual(HttpStatus.CONFLICT);
+          expect(response.body.error.name).toEqual('ConflictException');
+          expect(response.body.error.message).toEqual(
+            'Book already borrowed. Please wait until returned.',
+          );
+        });
+    });
+    it('should return NOT_FOUND error if user not exists', async () => {
+      const book = await createBook({});
+      const notExistingID = faker.string.uuid();
+
+      return request(APP.getHttpServer())
+        .post(`/users/${notExistingID}/borrow/${book.id}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .expect(HttpStatus.NOT_FOUND)
+        .expect((response) => {
+          expect(response.body.data).toBeNull();
+          expect(response.body.error.status).toEqual(HttpStatus.NOT_FOUND);
+          expect(response.body.error.name).toEqual('NotFoundException');
+          expect(response.body.error.message).toEqual(
+            'User not found. Please check User ID.',
+          );
+        });
+    });
+    it('should return NOT_FOUND error if book not exists', async () => {
+      const user = await createUser({});
+      const notExistingID = faker.string.uuid();
+
+      return request(APP.getHttpServer())
+        .post(`/users/${user.id}/borrow/${notExistingID}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .expect(HttpStatus.NOT_FOUND)
+        .expect((response) => {
+          expect(response.body.data).toBeNull();
+          expect(response.body.error.status).toEqual(HttpStatus.NOT_FOUND);
+          expect(response.body.error.name).toEqual('NotFoundException');
+          expect(response.body.error.message).toEqual(
+            'Book not found. Please check Book ID.',
           );
         });
     });
