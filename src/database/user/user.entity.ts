@@ -46,7 +46,7 @@ export class User extends BaseEntity {
   @OneToMany(() => UserBook, (inventory) => inventory.user)
   books = new Collection<UserBook>(this);
 
-  @Property({ persist: false })
+  @Property({ persist: false, hidden: true })
   get borrowedBooks(): BorrowedBooks {
     const isInitialized = this.books.isInitialized();
     if (!isInitialized) return null;
@@ -56,7 +56,9 @@ export class User extends BaseEntity {
       (acc, { book: { id, name }, returnedAt, userScore }) => {
         const target = returnedAt ? 'past' : 'present';
         acc[target].push(
-          returnedAt ? { id, name, score: userScore.toFixed(2) } : { id, name },
+          returnedAt
+            ? { id, name, userScore: userScore.toFixed(2) }
+            : { id, name },
         );
         return acc;
       },

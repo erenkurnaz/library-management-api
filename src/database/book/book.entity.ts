@@ -21,7 +21,7 @@ export class Book extends BaseEntity {
   @OneToMany(() => UserBook, (inventory) => inventory.book)
   userBook = new Collection<UserBook>(this);
 
-  @Property({ persist: false })
+  @Property({ persist: false, hidden: true })
   get avgScore() {
     const isInitialized = this.userBook.isInitialized();
     if (!isInitialized) return null;

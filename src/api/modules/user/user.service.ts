@@ -41,10 +41,10 @@ export class UserService {
       limit: pagination?.limit,
       offset: pagination?.offset,
       orderBy: { [pagination?.orderBy]: pagination?.order },
-      fields: ['id', 'fullName', 'email', 'role'],
+      fields: ['id', 'fullName', 'email'],
     });
 
-    return <PaginatedResult<Pick<User, 'id' | 'fullName' | 'email' | 'role'>>>{
+    return <PaginatedResult<Pick<User, 'id' | 'fullName' | 'email'>>>{
       results,
       total,
     };
