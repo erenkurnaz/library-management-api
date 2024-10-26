@@ -238,4 +238,66 @@ describe('User Management (e2e)', () => {
         });
     });
   });
+
+  describe('returning a book', () => {
+    it('should return a book successfully', async () => {
+      const book = await createBook({});
+      const user = await createUser({});
+      await createUserBook({ user, book });
+
+      return request(APP.getHttpServer())
+        .post(`/users/${user.id}/return/${book.id}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .send({ score: 5 })
+        .expect(HttpStatus.NO_CONTENT)
+        .expect((response) => {
+          expect(response.body.data).toBeUndefined();
+          return getUserBook({ user, book }).then((userBook) => {
+            expect(userBook).toBeDefined();
+            expect(userBook.borrowedAt).toBeDefined();
+          });
+        });
+    });
+    it('should return an error if score not between 0-10', async () => {
+      const book = await createBook({});
+      const user = await createBook({});
+
+      return request(APP.getHttpServer())
+        .post(`/users/${user.id}/return/${book.id}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .send({ score: -1 })
+        .expect(HttpStatus.BAD_REQUEST)
+        .expect((response) => {
+          const validationErrors = response.body.error.errors;
+          expect(response.body.data).toBeNull();
+          expect(validationErrors.length).toEqual(1);
+          expect(response.body.error.status).toEqual(HttpStatus.BAD_REQUEST);
+
+          expect(validationErrors[0].field).toEqual('score');
+          expect(validationErrors[0].message).toEqual(
+            'score must not be less than 0',
+          );
+        });
+    });
+    it('should return NOT_FOUND error if returns not borrowed book', async () => {
+      const book = await createBook({});
+      const user = await createUser({});
+      await createUserBook({ user, book });
+
+      const userNotBorrowedBook = await createUser({});
+      return request(APP.getHttpServer())
+        .post(`/users/${userNotBorrowedBook.id}/return/${book.id}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .send({ score: 5 })
+        .expect(HttpStatus.NOT_FOUND)
+        .expect((response) => {
+          expect(response.body.data).toBeNull();
+          expect(response.body.error.status).toEqual(HttpStatus.NOT_FOUND);
+          expect(response.body.error.name).toEqual('NotFoundException');
+          expect(response.body.error.message).toEqual(
+            'No record found for this book.',
+          );
+        });
+    });
+  });
 });

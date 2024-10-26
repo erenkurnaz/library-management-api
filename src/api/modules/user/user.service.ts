@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FilterQuery } from '@mikro-orm/core';
 import { User, UserRepository } from '../../../database/user';
 import { UserCreateDto } from './dto/user-create.dto';
@@ -6,6 +10,7 @@ import { HashService } from '../../../security/services/hash.service';
 import { PaginatedResult, PaginationOptions } from '../../decorators';
 import { UserDetailResult } from './dto/user-detail.result';
 import { UserBookRepository } from '../../../database/user-book';
+import { ReturnBookDto } from './dto/return-book.dto';
 
 @Injectable()
 export class UserService {
@@ -75,5 +80,24 @@ export class UserService {
     });
     await this.userBookRepository.getEntityManager().flush();
     return createdUserBook;
+  }
+
+  public async returnBook(
+    userId: string,
+    bookId: string,
+    { score }: ReturnBookDto,
+  ) {
+    const userBookToUpdate = await this.userBookRepository.findOne({
+      user: userId,
+      book: bookId,
+      returnedAt: null,
+    });
+    if (!userBookToUpdate)
+      throw new NotFoundException('No record found for this book.');
+
+    userBookToUpdate.returnedAt = new Date();
+    userBookToUpdate.userScore = score;
+    await this.userBookRepository.getEntityManager().flush();
+    return userBookToUpdate;
   }
 }

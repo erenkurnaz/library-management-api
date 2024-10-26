@@ -15,6 +15,7 @@ import { Pagination, PaginationOptions, Roles } from '../../decorators';
 import { User, UserRole } from '../../../database/user';
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user-create.dto';
+import { ReturnBookDto } from './dto/return-book.dto';
 
 @Controller('users')
 @UseGuards(RolesGuard)
@@ -53,5 +54,15 @@ export class UserController {
     @Param('bookId') bookId: string,
   ) {
     await this.userService.validateAndBorrowBook(userId, bookId);
+  }
+
+  @Post(':userId/return/:bookId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async returnBook(
+    @Body() returnBookDto: ReturnBookDto,
+    @Param('userId') userId: string,
+    @Param('bookId') bookId: string,
+  ) {
+    await this.userService.returnBook(userId, bookId, returnBookDto);
   }
 }
