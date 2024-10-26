@@ -9,13 +9,16 @@ import { AuthenticationService } from './modules/authentication/authentication.s
 import { ClassValidationPipe } from './pipes/class-validation.pipe';
 import { BookController } from './modules/book/book.controller';
 import { BookService } from './modules/book/book.service';
+import { UserController } from './modules/user/user.controller';
+import { UserService } from './modules/user/user.service';
 
 @Module({
   imports: [DatabaseModule, SecurityModule],
-  controllers: [AuthenticationController, BookController],
+  controllers: [AuthenticationController, BookController, UserController],
   providers: [
     AuthenticationService,
     BookService,
+    UserService,
     {
       provide: APP_GUARD,
       useClass: AccessTokenGuard,
