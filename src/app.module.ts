@@ -4,6 +4,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { MikroORM } from '@mikro-orm/core';
 
 import { configuration, configValidation, IConfig } from './config';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { configuration, configValidation, IConfig } from './config';
       useFactory: (config: ConfigService<IConfig, true>) =>
         config.get('database'),
     }),
+    ApiModule,
   ],
 })
 export class AppModule implements OnModuleInit {
