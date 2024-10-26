@@ -1,0 +1,1658 @@
+{
+	"info": {
+		"_postman_id": "d021b32f-851f-4433-bee2-ae27f72de651",
+		"name": "Library API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22854292",
+		"_collection_link": "https://warped-robot-819023.postman.co/workspace/7b0805a2-1f67-4d64-8d7d-4672f6d4e5cf/collection/22854292-d021b32f-851f-4433-bee2-ae27f72de651?action=share&source=collection_link&creator=22854292"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Sign-up",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"access_token\", jsonData.data.accessToken);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"eren kurnaz\",\n    \"password\": \"123456\",\n    \"email\": \"eren@mail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/auth/sign-up",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Sign-up",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"eren kurnaz\",\n    \"password\": \"123456\",\n    \"email\": \"eren@mail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3000/auth/sign-up",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "483"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e3-qJMJMTZCc6WsLG3X/Xhsj+qMqAI\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:27:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"user\": {\n            \"id\": \"a10a4d17-d46e-4fe6-ba20-0f139fec1b72\",\n            \"books\": [],\n            \"createdAt\": \"2024-10-26T17:27:18.260Z\",\n            \"updatedAt\": null,\n            \"email\": \"eren@mail.com\",\n            \"fullName\": \"eren kurnaz\",\n            \"role\": \"user\",\n            \"borrowedBooks\": {\n                \"past\": [],\n                \"present\": []\n            }\n        },\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImExMGE0ZDE3LWQ0NmUtNGZlNi1iYTIwLTBmMTM5ZmVjMWI3MiIsImVtYWlsIjoiZXJlbkBtYWlsLmNvbSIsImlhdCI6MTcyOTk2MzY0OSwiZXhwIjoxNzMwNTY4NDQ5fQ.3j2NGdJ3QcDXRBMGTVMzVrr6v2h6BdWE53LoicdxrxU\"\n    },\n    \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Sign-in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"access_token\", jsonData.data.accessToken);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"darthvader@mail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/auth/sign-in",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"sign-in"
+							]
+						},
+						"description": "This endpoint is used to sign in a user. The HTTP POST request should be sent to {{host}}/auth/sign-in with the user's email and password provided in the raw request body.\n\n### Request Body\n\n- email (string, required): The email of the user.\n- password (string, required): The password of the user.\n    \n\n### Response\n\nUpon successful execution, the server will respond with a status code of 200 and a JSON object in the response body with the following structure:\n\n``` json\n{\n  \"data\": {\n    \"user\": {\n      \"id\": \"\",\n      \"createdAt\": \"\",\n      \"updatedAt\": null,\n      \"email\": \"\",\n      \"fullName\": \"\",\n      \"role\": \"\"\n    },\n    \"accessToken\": \"\"\n  },\n  \"error\": null\n}\n\n ```\n\n- data (object): Contains user information and access token.\n    - user (object): User details including id, creation and update timestamps, email, full name, and role.\n    - accessToken (string): Access token for the signed-in user.\n- error (null): If the sign-in is successful, the error field will be null."
+					},
+					"response": [
+						{
+							"name": "Sign-in",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"darthvader@mail.com\",\n    \"password\": \"password\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3000/auth/sign-in",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"auth",
+										"sign-in"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "467"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d3-D90QQv+A4pEkodCJp/J+zs8r/s0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:28:02 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"user\": {\n            \"id\": \"9a216546-b9ff-4127-8b39-30ed784bd76e\",\n            \"createdAt\": \"2024-10-26T17:27:18.260Z\",\n            \"updatedAt\": null,\n            \"email\": \"darthvader@mail.com\",\n            \"fullName\": \"Darth Vader\",\n            \"role\": \"admin\",\n            \"borrowedBooks\": null\n        },\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjlhMjE2NTQ2LWI5ZmYtNDEyNy04YjM5LTMwZWQ3ODRiZDc2ZSIsImVtYWlsIjoiZGFydGh2YWRlckBtYWlsLmNvbSIsImlhdCI6MTcyOTk2MzY4MiwiZXhwIjoxNzMwNTY4NDgyfQ.UYcP0lfyerbSTOylB3o5Q1kFlmTOUsN7jGeKeImmliw\"\n    },\n    \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Me",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/auth/me",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Me",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3000/auth/me",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"auth",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "137"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"89-Kqi7/hRSguvD86oAcjZVQxKZLsQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:29:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"id\": \"9a216546-b9ff-4127-8b39-30ed784bd76e\",\n        \"email\": \"darthvader@mail.com\",\n        \"fullName\": \"Darth Vader\",\n        \"role\": \"admin\"\n    },\n    \"error\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/users?limit=5&offset=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Users",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/users?limit=5&offset=0",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "5"
+										},
+										{
+											"key": "offset",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "464"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d0-cjL6avoT0gKNSBwJOgf+bTPZUhc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:31:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"results\": [\n            {\n                \"id\": \"9a216546-b9ff-4127-8b39-30ed784bd76e\",\n                \"email\": \"darthvader@mail.com\",\n                \"fullName\": \"Darth Vader\",\n                \"role\": \"admin\"\n            },\n            {\n                \"id\": \"aa29196c-6c16-4a6d-835e-64966fe75c6a\",\n                \"email\": \"obiwankenobi@mail.com\",\n                \"fullName\": \"Obi-Wan Kenobi\"\n            },\n            {\n                \"id\": \"881434ce-661c-403a-8c90-5972b695894c\",\n                \"email\": \"quigonjinn@mail.com\",\n                \"fullName\": \"Qui-Gon Jinn\"\n            },\n            {\n                \"id\": \"a10a4d17-d46e-4fe6-ba20-0f139fec1b72\",\n                \"email\": \"eren@mail.com\",\n                \"fullName\": \"eren kurnaz\"\n            }\n        ],\n        \"total\": 4\n    },\n    \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/users/:userId",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "9a216546-b9ff-4127-8b39-30ed784bd76e"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "user with his past and current book borrow list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/users/:userId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "aa29196c-6c16-4a6d-835e-64966fe75c6a"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "626"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"272-WDuS2Lz+JBORe85MheA+59trwFE\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:33:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"id\": \"aa29196c-6c16-4a6d-835e-64966fe75c6a\",\n        \"fullName\": \"Obi-Wan Kenobi\",\n        \"books\": {\n            \"past\": [\n                {\n                    \"id\": \"7450ec60-3e3e-424f-8f47-3d63bd44d621\",\n                    \"name\": \"Star Wars: A New Hope\",\n                    \"userScore\": \"7.00\"\n                },\n                {\n                    \"id\": \"fddfd72a-94d9-48a5-ae80-632c1b1e97c1\",\n                    \"name\": \"Star Wars: The Empire Strikes Back\",\n                    \"userScore\": \"8.00\"\n                },\n                {\n                    \"id\": \"2caab706-5aa9-4ea0-ac0c-b8b931edf0b1\",\n                    \"name\": \"Star Wars: Return of the Jedi\",\n                    \"userScore\": \"6.00\"\n                },\n                {\n                    \"id\": \"f39ac73d-6371-40ff-9da1-b58334ac98ce\",\n                    \"name\": \"Star Wars: The Phantom Menace\",\n                    \"userScore\": \"9.00\"\n                }\n            ],\n            \"present\": [\n                {\n                    \"id\": \"cadb39da-a98e-4bcb-a35a-5e430851af29\",\n                    \"name\": \"Star Wars: Attack of the Clones\"\n                }\n            ]\n        }\n    },\n    \"error\": null\n}"
+						},
+						{
+							"name": "user with no borrow history",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/users/:userId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "9a216546-b9ff-4127-8b39-30ed784bd76e"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "125"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"7d-SSpYZZu+qKGPT4/KU2f7DcP1Wh8\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:34:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"id\": \"9a216546-b9ff-4127-8b39-30ed784bd76e\",\n        \"fullName\": \"Darth Vader\",\n        \"books\": {\n            \"past\": [],\n            \"present\": []\n        }\n    },\n    \"error\": null\n}"
+						},
+						{
+							"name": "failed with wrong userID",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/users/:userId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "9a216546-b9ff-4127-8b39-30ed784bd76a"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "165"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"a5-TO0aEykprNOZgD0kHKnQgG3P/A4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:35:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"error\": {\n        \"status\": 404,\n        \"name\": \"NotFoundException\",\n        \"message\": \"User not found ({ id: '9a216546-b9ff-4127-8b39-30ed784bd76a' })\",\n        \"timestamp\": 1729964103486\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"John Doe\",\n    \"email\": \"mai1l@mail.com\",\n    \"password\": \"123456\",\n    \"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/users",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"John Doe\",\n    \"email\": \"mai1l@mail.com\",\n    \"password\": \"123456\",\n    \"role\": \"admin\"\n}"
+								},
+								"url": {
+									"raw": "localhost:3000/users",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "196"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c4-o64RkZQCzaODiVc+vMYw/CQum1Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:36:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"id\": \"6415722b-b946-4d87-95d7-7bfd5db505a5\",\n        \"books\": [],\n        \"createdAt\": \"2024-10-26T17:27:18.260Z\",\n        \"updatedAt\": null,\n        \"email\": \"mai1l@mail.com\",\n        \"fullName\": \"John Doe\",\n        \"role\": \"admin\"\n    },\n    \"error\": null\n}"
+						},
+						{
+							"name": "failed with validation error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"John Doe\",\n    \"email\": \"mai1l@mail.com\",\n    \"role\": \"admin\"\n}"
+								},
+								"url": {
+									"raw": "localhost:3000/users",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "244"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f4-oRO1m3ib1Bn+kB4D3ts5wdk65vE\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:36:59 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"error\": {\n        \"status\": 400,\n        \"name\": \"ValidationException\",\n        \"message\": \"Validation failed\",\n        \"errors\": [\n            {\n                \"field\": \"password\",\n                \"message\": \"password must be longer than or equal to 6 characterspassword must be a string\"\n            }\n        ],\n        \"timestamp\": 1729964219763\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Borrow Book",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/users/:userId/borrow/:bookId",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								":userId",
+								"borrow",
+								":bookId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "aa29196c-6c16-4a6d-835e-64966fe75c6a"
+								},
+								{
+									"key": "bookId",
+									"value": "7450ec60-3e3e-424f-8f47-3d63bd44d621"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "failed with book not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/users/:userId/borrow/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId",
+										"borrow",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "b135e995-0601-4929-9098-1a47bc55683a"
+										},
+										{
+											"key": "bookId",
+											"value": "4f106874-d159-4c7b-9f24-544c91a9d8da"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "139"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"8b-Gl2ayd1guvkDzYLjsfs9ovP6m5Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:37:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"error\": {\n        \"status\": 404,\n        \"name\": \"NotFoundException\",\n        \"message\": \"Book not found. Please check Book ID.\",\n        \"timestamp\": 1729964254571\n    }\n}"
+						},
+						{
+							"name": "User borrowed a book succesfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/users/:userId/borrow/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId",
+										"borrow",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "9a216546-b9ff-4127-8b39-30ed784bd76e"
+										},
+										{
+											"key": "bookId",
+											"value": "7450ec60-3e3e-424f-8f47-3d63bd44d621"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"e-hDOZGZ11/MTPwZq/A8sGFlQzkPc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:38:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "failed with already borrowed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/users/:userId/borrow/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId",
+										"borrow",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "aa29196c-6c16-4a6d-835e-64966fe75c6a"
+										},
+										{
+											"key": "bookId",
+											"value": "7450ec60-3e3e-424f-8f47-3d63bd44d621"
+										}
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "152"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"98-OCsCyyDtihw/3Fev8ipyU7fX93I\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:40:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"error\": {\n        \"status\": 409,\n        \"name\": \"ConflictException\",\n        \"message\": \"Book already borrowed. Please wait until returned.\",\n        \"timestamp\": 1729964400542\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Return Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"score\": 1\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/users/:userId/return/:bookId",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								":userId",
+								"return",
+								":bookId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "9a216546-b9ff-4127-8b39-30ed784bd76a"
+								},
+								{
+									"key": "bookId",
+									"value": "7450ec60-3e3e-424f-8f47-3d63bd44d62e"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "User returning a book with his score",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"score\": 1\n}"
+								},
+								"url": {
+									"raw": "localhost:3000/users/:userId/return/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId",
+										"return",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "9a216546-b9ff-4127-8b39-30ed784bd76e"
+										},
+										{
+											"key": "bookId",
+											"value": "7450ec60-3e3e-424f-8f47-3d63bd44d621"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"e-hDOZGZ11/MTPwZq/A8sGFlQzkPc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:41:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "failed with no recorded borrow",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"score\": 1\n}"
+								},
+								"url": {
+									"raw": "localhost:3000/users/:userId/return/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId",
+										"return",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "9a216546-b9ff-4127-8b39-30ed784bd76a"
+										},
+										{
+											"key": "bookId",
+											"value": "7450ec60-3e3e-424f-8f47-3d63bd44d62e"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "132"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"84-XuCtIb/MZ/BTa8F+uaUc+cH103g\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:41:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"error\": {\n        \"status\": 404,\n        \"name\": \"NotFoundException\",\n        \"message\": \"No record found for this book.\",\n        \"timestamp\": 1729964512621\n    }\n}"
+						},
+						{
+							"name": "failed with no score",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:3000/users/:userId/return/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										":userId",
+										"return",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "9a216546-b9ff-4127-8b39-30ed784bd76a"
+										},
+										{
+											"key": "bookId",
+											"value": "7450ec60-3e3e-424f-8f47-3d63bd44d62e"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "287"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"11f-GDFroI6Wv+HvVUxtHxIyyTKzCsM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:42:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"error\": {\n        \"status\": 400,\n        \"name\": \"ValidationException\",\n        \"message\": \"Validation failed\",\n        \"errors\": [\n            {\n                \"field\": \"score\",\n                \"message\": \"score must not be less than 0score must not be greater than 10score must be a number conforming to the specified constraints\"\n            }\n        ],\n        \"timestamp\": 1729964544243\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Get Book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/books/:bookId",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"books",
+								":bookId"
+							],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": "422ee87c-6436-4ffc-8cf6-015b40b9ec24"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Getting a book with its average user score",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/books/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"books",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "bookId",
+											"value": "7450ec60-3e3e-424f-8f47-3d63bd44d621"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "113"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"71-zmDVgCo2pn5rYHbPUTQyPZ8wIBs\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:44:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"id\": \"7450ec60-3e3e-424f-8f47-3d63bd44d621\",\n        \"name\": \"Star Wars: A New Hope\",\n        \"score\": \"5.33\"\n    },\n    \"error\": null\n}"
+						},
+						{
+							"name": "Getting a book which is not scored yet",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/books/:bookId",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"books",
+										":bookId"
+									],
+									"variable": [
+										{
+											"key": "bookId",
+											"value": "422ee87c-6436-4ffc-8cf6-015b40b9ec24"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "102"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"66-WBMahcjxjxoBwqFJzJDQMClKobU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:44:51 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"id\": \"422ee87c-6436-4ffc-8cf6-015b40b9ec24\",\n        \"name\": \"Neuromancer2 1\",\n        \"score\": -1\n    },\n    \"error\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Neuromancer2 1\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/books",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Creating a book",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "Content-Type",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"Neuromancer\"\n}"
+								},
+								"url": {
+									"raw": "localhost:3000/books",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"books"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "failed with validation error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\n}"
+								},
+								"url": {
+									"raw": "localhost:3000/books",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"books"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "183"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"b7-cJ7eEB94g0yP/tvlHp8pgykQ5R4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:45:28 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"error\": {\n        \"status\": 400,\n        \"name\": \"ValidationException\",\n        \"message\": \"Validation failed\",\n        \"errors\": [\n            {\n                \"field\": \"name\",\n                \"message\": \"name must be a string\"\n            }\n        ],\n        \"timestamp\": 1729964728566\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/books?limit=5&offset=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"books"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "A New hope",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Getting book list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/books?limit=5&offset=0",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "5"
+										},
+										{
+											"key": "offset",
+											"value": "0"
+										},
+										{
+											"key": "keyword",
+											"value": "A New hope",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "469"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d5-v7yVDZzDUNtfFl+2Rf1lvJEF6P4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Oct 2024 17:43:44 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"results\": [\n            {\n                \"id\": \"7450ec60-3e3e-424f-8f47-3d63bd44d621\",\n                \"name\": \"Star Wars: A New Hope\"\n            },\n            {\n                \"id\": \"fddfd72a-94d9-48a5-ae80-632c1b1e97c1\",\n                \"name\": \"Star Wars: The Empire Strikes Back\"\n            },\n            {\n                \"id\": \"2caab706-5aa9-4ea0-ac0c-b8b931edf0b1\",\n                \"name\": \"Star Wars: Return of the Jedi\"\n            },\n            {\n                \"id\": \"f39ac73d-6371-40ff-9da1-b58334ac98ce\",\n                \"name\": \"Star Wars: The Phantom Menace\"\n            },\n            {\n                \"id\": \"cadb39da-a98e-4bcb-a35a-5e430851af29\",\n                \"name\": \"Star Wars: Attack of the Clones\"\n            }\n        ],\n        \"total\": 9\n    },\n    \"error\": null\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
