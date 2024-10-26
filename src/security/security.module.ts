@@ -7,6 +7,7 @@ import { TokenService } from './services/token.service';
 import { DatabaseModule } from '../database/database.module';
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { AccessTokenGuard } from './guards/access-token.guard';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [
@@ -21,7 +22,13 @@ import { AccessTokenGuard } from './guards/access-token.guard';
       }),
     }),
   ],
-  providers: [HashService, TokenService, AccessTokenStrategy, AccessTokenGuard],
+  providers: [
+    HashService,
+    TokenService,
+    AccessTokenStrategy,
+    AccessTokenGuard,
+    RolesGuard,
+  ],
   exports: [HashService, TokenService],
 })
 export class SecurityModule {}
