@@ -4,6 +4,7 @@ import { User, UserRepository } from '../../../database/user';
 import { UserCreateDto } from './dto/user-create.dto';
 import { HashService } from '../../../security/services/hash.service';
 import { PaginatedResult, PaginationOptions } from '../../decorators';
+import { UserDetailResult } from './dto/user-detail.result';
 
 @Injectable()
 export class UserService {
@@ -21,12 +22,7 @@ export class UserService {
     return createdUser;
   }
 
-  public async getAll(
-    keyword?: string,
-    pagination?: PaginationOptions<User>,
-  ): Promise<
-    PaginatedResult<Pick<User, 'id' | 'fullName' | 'email' | 'role'>>
-  > {
+  public async getAll(keyword?: string, pagination?: PaginationOptions<User>) {
     let where: FilterQuery<User> = {};
     if (keyword) {
       where = {
@@ -41,7 +37,7 @@ export class UserService {
       fields: ['id', 'fullName', 'email', 'role'],
     });
 
-    return {
+    return <PaginatedResult<Pick<User, 'id' | 'fullName' | 'email' | 'role'>>>{
       results,
       total,
     };
@@ -53,7 +49,7 @@ export class UserService {
       { populate: ['borrowedBooks', 'books', 'books.book.*'] },
     );
 
-    return {
+    return <UserDetailResult>{
       id: userWithBorrowHistory.id,
       fullName: userWithBorrowHistory.fullName,
       books: userWithBorrowHistory.borrowedBooks,

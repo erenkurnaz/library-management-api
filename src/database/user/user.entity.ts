@@ -11,11 +11,17 @@ import {
 import { BaseEntity } from '../base/base-entity';
 import { UserRepository } from './user.repository';
 import { UserBook } from '../user-book';
+import { Book } from '../book';
 
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
 }
+
+export type BorrowedBooks = {
+  past: Book[];
+  present: Book[];
+};
 
 @Entity({ repository: () => UserRepository })
 export class User extends BaseEntity {
@@ -41,7 +47,7 @@ export class User extends BaseEntity {
   books = new Collection<UserBook>(this);
 
   @Property({ persist: false })
-  get borrowedBooks() {
+  get borrowedBooks(): BorrowedBooks {
     const isInitialized = this.books.isInitialized();
     if (!isInitialized) return null;
 
