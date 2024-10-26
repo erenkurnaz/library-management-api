@@ -3,6 +3,7 @@ import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { EntityGenerator } from '@mikro-orm/entity-generator';
 import { Migrator } from '@mikro-orm/migrations';
 import { SeedManager } from '@mikro-orm/seeder';
+import { RedisCacheAdapter } from 'mikro-orm-cache-adapter-redis';
 
 export default () => {
   return defineConfig({
@@ -37,6 +38,16 @@ export default () => {
       glob: '!(*.d).{js,ts}',
       emit: 'ts',
       fileName: () => 'database.seeder',
+    },
+    resultCache: {
+      adapter: RedisCacheAdapter,
+      expiration: Number(process.env.REDIS_RESULT_CACHE_TTL || 15 * 1000),
+      options: {
+        keyPrefix: 'library-management',
+        host: process.env.REDIS_HOST,
+        password: process.env.REDIS_PASSWORD,
+        port: Number(process.env.REDIS_PORT),
+      },
     },
   });
 };
