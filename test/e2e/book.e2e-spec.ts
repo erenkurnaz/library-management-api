@@ -1,9 +1,11 @@
 import * as request from 'supertest';
+import { HttpStatus } from '@nestjs/common';
 import { APP, clearDatabase } from '../helpers/app.helper';
 import { createToken, createUser } from '../helpers/user.helper';
 import { UserRole } from '../../src/database/user';
 import { BookCreateDto } from '../../src/api/modules/book/dto/book-create.dto';
-import { HttpStatus } from '@nestjs/common';
+import { createBook } from '../helpers/book.helper';
+import { Book } from '../../src/database/book';
 
 describe('Book (e2e)', () => {
   beforeEach(async () => {
@@ -57,6 +59,55 @@ describe('Book (e2e)', () => {
 
           expect(validationErrors[0].field).toEqual('name');
           expect(validationErrors[0].message).toEqual('name must be a string');
+        });
+    });
+  });
+
+  describe('List books', () => {
+    let BOOKS: Book[];
+    beforeEach(async () => {
+      BOOKS = await Promise.all([
+        createBook({}),
+        createBook({}),
+        createBook({}),
+      ]);
+    });
+
+    it('should return all books', async () => {
+      return request(APP.getHttpServer())
+        .get('/books')
+        .expect(200)
+        .expect((response) => {
+          const paginatedResponse = response.body.data;
+
+          expect(paginatedResponse).toBeDefined();
+          expect(paginatedResponse.results.length).toEqual(BOOKS.length);
+        });
+    });
+    it('should apply pagination parameters', async () => {
+      const [LIMIT, OFFSET] = [1, 0];
+      return request(APP.getHttpServer())
+        .get(`/books?limit=${LIMIT}&offset=${OFFSET}`)
+        .expect(200)
+        .expect((response) => {
+          const { results, total } = response.body.data;
+          expect(results.length).toEqual(LIMIT);
+          expect(total).toEqual(BOOKS.length);
+        });
+    });
+    it('should apply keyword search', async () => {
+      const searchedBook = BOOKS[1];
+      await createBook({ name: searchedBook.name + '2' });
+
+      const [LIMIT, OFFSET, KEYWORD] = [1, 0, searchedBook.name];
+      return request(APP.getHttpServer())
+        .get(`/books?limit=${LIMIT}&offset=${OFFSET}&keyword=${KEYWORD}`)
+        .expect(200)
+        .expect((response) => {
+          const { results, total } = response.body.data;
+
+          expect(results.length).toEqual(1);
+          expect(total).toEqual(2);
         });
     });
   });
