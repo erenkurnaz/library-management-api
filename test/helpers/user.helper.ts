@@ -13,7 +13,7 @@ export async function createUser({
   password = faker.internet.password(),
   fullName = faker.person.fullName(),
   role = UserRole.USER,
-}: Partial<User>): Promise<User> {
+}: Partial<User> = {}): Promise<User> {
   const userRepository = APP.get<UserRepository>(UserRepository);
   const hashService = APP.get(HashService);
   const user = new User();
@@ -40,7 +40,7 @@ export async function createUserBook({
   borrowedAt,
   returnedAt,
   userScore,
-}: Partial<UserBook>) {
+}: Partial<UserBook> = {}) {
   const userBookRepository = APP.get<UserBookRepository>(UserBookRepository);
   const userBook = new UserBook();
   userBook.user = user;

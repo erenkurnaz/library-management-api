@@ -72,11 +72,7 @@ describe('Book (e2e)', () => {
   describe('List books', () => {
     let BOOKS: Book[];
     beforeEach(async () => {
-      BOOKS = await Promise.all([
-        createBook({}),
-        createBook({}),
-        createBook({}),
-      ]);
+      BOOKS = await Promise.all([createBook(), createBook(), createBook()]);
     });
 
     it('should return all books', async () => {
@@ -121,13 +117,13 @@ describe('Book (e2e)', () => {
   describe('Get book', () => {
     let TOKEN: string;
     beforeEach(async () => {
-      const user = await createUser({});
+      const user = await createUser();
       TOKEN = await createToken({ id: user.id, email: user.email });
     });
 
     it('should return book with average score', async () => {
-      const user = await createUser({});
-      const book = await createBook({});
+      const user = await createUser();
+      const book = await createBook();
       await Promise.all([
         createUserBook({
           book,
@@ -147,6 +143,10 @@ describe('Book (e2e)', () => {
           userScore: 4,
           returnedAt: moment().add(3, 'day').toDate(),
         }),
+        createUserBook({
+          book,
+          user,
+        }),
       ]);
       return request(APP.getHttpServer())
         .get(`/books/${book.id}`)
@@ -160,8 +160,8 @@ describe('Book (e2e)', () => {
         });
     });
     it('should return book with not scored yet', async () => {
-      const user = await createUser({});
-      const book = await createBook({});
+      const user = await createUser();
+      const book = await createBook();
       await createUserBook({
         user,
         book,

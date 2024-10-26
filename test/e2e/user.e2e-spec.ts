@@ -62,7 +62,7 @@ describe('User Management (e2e)', () => {
 
   describe('List Users', () => {
     it('should return all users', async () => {
-      const users = await Promise.all([createUser({}), createUser({})]);
+      const users = await Promise.all([createUser(), createUser()]);
       return request(APP.getHttpServer())
         .get('/users')
         .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
@@ -75,7 +75,7 @@ describe('User Management (e2e)', () => {
     });
     it('should apply pagination params', async () => {
       const [LIMIT, OFFSET] = [1, 0];
-      const users = await Promise.all([createUser({}), createUser({})]);
+      const users = await Promise.all([createUser(), createUser()]);
       return request(APP.getHttpServer())
         .get(`/users?limit=${LIMIT}&offset=${OFFSET}`)
         .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
@@ -91,9 +91,9 @@ describe('User Management (e2e)', () => {
   describe('Get User', () => {
     it('should return with borrowed books', async () => {
       const PAST_BOOK_SCORE = 1;
-      const user = await createUser({});
-      const pastBook = await createBook({});
-      const presentBook = await createBook({});
+      const user = await createUser();
+      const pastBook = await createBook();
+      const presentBook = await createBook();
       await Promise.all([
         createUserBook({
           book: pastBook,
@@ -115,20 +115,17 @@ describe('User Management (e2e)', () => {
           expect(response.body.data.id).toEqual(user.id);
           expect(response.body.data.fullName).toEqual(user.fullName);
 
-          expect(response.body.data.books.past[0]).toBeDefined();
-          expect(response.body.data.books.past[0].id).toEqual(pastBook.id);
-          expect(response.body.data.books.past[0].score).toEqual(
-            PAST_BOOK_SCORE.toFixed(2),
-          );
+          const books = response.body.data.books;
+          expect(books.past[0]).toBeDefined();
+          expect(books.past[0].id).toEqual(pastBook.id);
+          expect(books.past[0].userScore).toEqual(PAST_BOOK_SCORE.toFixed(2));
 
-          expect(response.body.data.books.present[0]).toBeDefined();
-          expect(response.body.data.books.present[0].id).toEqual(
-            presentBook.id,
-          );
+          expect(books.present[0]).toBeDefined();
+          expect(books.present[0].id).toEqual(presentBook.id);
         });
     });
     it('should return with empty borrowed books', async () => {
-      const user = await createUser({});
+      const user = await createUser();
 
       return request(APP.getHttpServer())
         .get(`/users/${user.id}`)
@@ -165,8 +162,8 @@ describe('User Management (e2e)', () => {
 
   describe('Borrow Book', () => {
     it('should borrow a book successfully', async () => {
-      const book = await createBook({});
-      const user = await createUser({});
+      const book = await createBook();
+      const user = await createUser();
       return request(APP.getHttpServer())
         .post(`/users/${user.id}/borrow/${book.id}`)
         .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
@@ -182,13 +179,13 @@ describe('User Management (e2e)', () => {
         });
     });
     it('should return CONFLICT error if book already borrowed and not returned yet', async () => {
-      const book = await createBook({});
-      const user_already_borrow = await createUser({});
+      const book = await createBook();
+      const user_already_borrow = await createUser();
       await createUserBook({
         book,
         user: user_already_borrow,
       });
-      const user = await createUser({});
+      const user = await createUser();
 
       return request(APP.getHttpServer())
         .post(`/users/${user.id}/borrow/${book.id}`)
@@ -204,7 +201,7 @@ describe('User Management (e2e)', () => {
         });
     });
     it('should return NOT_FOUND error if user not exists', async () => {
-      const book = await createBook({});
+      const book = await createBook();
       const notExistingID = faker.string.uuid();
 
       return request(APP.getHttpServer())
@@ -221,7 +218,7 @@ describe('User Management (e2e)', () => {
         });
     });
     it('should return NOT_FOUND error if book not exists', async () => {
-      const user = await createUser({});
+      const user = await createUser();
       const notExistingID = faker.string.uuid();
 
       return request(APP.getHttpServer())
@@ -241,8 +238,8 @@ describe('User Management (e2e)', () => {
 
   describe('returning a book', () => {
     it('should return a book successfully', async () => {
-      const book = await createBook({});
-      const user = await createUser({});
+      const book = await createBook();
+      const user = await createUser();
       await createUserBook({ user, book });
 
       return request(APP.getHttpServer())
@@ -259,8 +256,8 @@ describe('User Management (e2e)', () => {
         });
     });
     it('should return an error if score not between 0-10', async () => {
-      const book = await createBook({});
-      const user = await createBook({});
+      const book = await createBook();
+      const user = await createBook();
 
       return request(APP.getHttpServer())
         .post(`/users/${user.id}/return/${book.id}`)
@@ -280,11 +277,11 @@ describe('User Management (e2e)', () => {
         });
     });
     it('should return NOT_FOUND error if returns not borrowed book', async () => {
-      const book = await createBook({});
-      const user = await createUser({});
+      const book = await createBook();
+      const user = await createUser();
       await createUserBook({ user, book });
 
-      const userNotBorrowedBook = await createUser({});
+      const userNotBorrowedBook = await createUser();
       return request(APP.getHttpServer())
         .post(`/users/${userNotBorrowedBook.id}/return/${book.id}`)
         .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
