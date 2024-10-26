@@ -46,4 +46,17 @@ export class UserService {
       total,
     };
   }
+
+  public async findById(userId: string) {
+    const userWithBorrowHistory = await this.userRepository.findOneOrFail(
+      { id: userId },
+      { populate: ['borrowedBooks', 'books', 'books.book.*'] },
+    );
+
+    return {
+      id: userWithBorrowHistory.id,
+      fullName: userWithBorrowHistory.fullName,
+      books: userWithBorrowHistory.borrowedBooks,
+    };
+  }
 }

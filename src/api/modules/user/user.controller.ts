@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { RolesGuard } from '../../../security/guards/roles.guard';
 import { Pagination, PaginationOptions, Roles } from '../../decorators';
 import { User, UserRole } from '../../../database/user';
@@ -29,5 +37,10 @@ export class UserController {
     @Query('keyword') keyword?: string,
   ) {
     return await this.userService.getAll(keyword, pagination);
+  }
+
+  @Get(':userId')
+  public async getById(@Param('userId') userId: string) {
+    return await this.userService.findById(userId);
   }
 }
