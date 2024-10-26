@@ -1,5 +1,7 @@
 import { defineConfig, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
+import { EntityGenerator } from '@mikro-orm/entity-generator';
+import { Migrator } from '@mikro-orm/migrations';
 
 export default () => {
   return defineConfig({
@@ -17,6 +19,7 @@ export default () => {
     entitiesTs: ['src/**/*.entity.ts'],
     forceUtcTimezone: true,
     metadataProvider: TsMorphMetadataProvider,
+    extensions: [Migrator, EntityGenerator],
     migrations: {
       path: './dist/migrations',
       pathTs: './src/migrations',
