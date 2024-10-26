@@ -5,9 +5,18 @@ import {
   HttpException,
   ArgumentsHost,
   ExceptionFilter,
+  NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import {
+  DriverException,
+  ForeignKeyConstraintViolationException,
+  NotFoundError,
+  UniqueConstraintViolationException,
+} from '@mikro-orm/core';
+import { capitalize } from 'lodash';
 import { IConfig, RuntimeMode } from '../../config';
 import { ValidationException } from '../pipes/class-validation.pipe';
 
@@ -24,6 +33,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (this.config.get('mode') === RuntimeMode.DEVELOPMENT) {
       Logger.error(`Error Stack: ${exception.stack}`, 'ExceptionFilter');
+    }
+
+    if (
+      exception instanceof DriverException ||
+      exception instanceof NotFoundError
+    ) {
+      exception = this.normalizeDriverExceptions(exception);
     }
 
     const httpStatus =
@@ -45,5 +61,33 @@ export class AllExceptionsFilter implements ExceptionFilter {
     };
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+  }
+
+  private normalizeDriverExceptions(dbException: DriverException) {
+    if (dbException instanceof UniqueConstraintViolationException) {
+      const duplicateRecordMatch = dbException.message.match(
+        /insert into "([^"]+)"/,
+      );
+      if (duplicateRecordMatch) {
+        dbException = new ConflictException(
+          `${capitalize(duplicateRecordMatch?.[1])} already exists.`,
+        );
+      }
+    }
+    if (dbException instanceof ForeignKeyConstraintViolationException) {
+      const missingTableMatch = dbException.message.match(
+        /is not present in table "(.+?)"/,
+      );
+      if (missingTableMatch) {
+        const missingTable = capitalize(missingTableMatch[1]);
+        dbException = new NotFoundException(
+          `${missingTable} not found. Please check ${missingTable} ID.`,
+        );
+      }
+    }
+    if (dbException instanceof NotFoundError) {
+      dbException = new NotFoundException(dbException.message);
+    }
+    return dbException;
   }
 }
