@@ -1,10 +1,10 @@
 import * as request from 'supertest';
+import { faker } from '@faker-js/faker';
+import { HttpStatus } from '@nestjs/common';
 import { APP, clearDatabase } from '../helpers/app.helper';
 import { createToken, createUser } from '../helpers/user.helper';
 import { UserRole } from '../../src/database/user';
 import { UserCreateDto } from '../../src/api/modules/user/dto/user-create.dto';
-import { faker } from '@faker-js/faker';
-import { HttpStatus } from '@nestjs/common';
 
 describe('User Management (e2e)', () => {
   let ADMIN_TOKEN: string;
@@ -49,6 +49,34 @@ describe('User Management (e2e)', () => {
           expect(createdUser.email).toEqual(requestBody.email);
           expect(createdUser.fullName).toEqual(requestBody.fullName);
           expect(createdUser.role).toEqual(requestBody.role);
+        });
+    });
+  });
+
+  describe('List Users', () => {
+    it('should return all users', async () => {
+      const users = await Promise.all([createUser({}), createUser({})]);
+      return request(APP.getHttpServer())
+        .get('/users')
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .expect(200)
+        .expect((response) => {
+          const { results, total } = response.body.data;
+          expect(results.length).toEqual(users.length + 1);
+          expect(total).toEqual(users.length + 1);
+        });
+    });
+    it('should apply pagination params', async () => {
+      const [LIMIT, OFFSET] = [1, 0];
+      const users = await Promise.all([createUser({}), createUser({})]);
+      return request(APP.getHttpServer())
+        .get(`/users?limit=${LIMIT}&offset=${OFFSET}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+        .expect(200)
+        .expect((response) => {
+          const { results, total } = response.body.data;
+          expect(results.length).toEqual(LIMIT);
+          expect(total).toEqual(users.length + 1);
         });
     });
   });
