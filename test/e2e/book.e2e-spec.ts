@@ -2,7 +2,7 @@ import * as request from 'supertest';
 import { HttpStatus } from '@nestjs/common';
 import * as moment from 'moment';
 import { faker } from '@faker-js/faker';
-import { APP, clearDatabase } from '../helpers/app.helper';
+import { APP, CACHE_ADAPTER, clearDatabase } from '../helpers/app.helper';
 import {
   createToken,
   createUser,
@@ -11,23 +11,24 @@ import {
 import { UserRole } from '../../src/database/user';
 import { BookCreateDto } from '../../src/api/modules/book/dto/book-create.dto';
 import { createBook } from '../helpers/book.helper';
-import { Book } from '../../src/database/book';
+import { Book, bookCacheOptions } from '../../src/database/book';
 
 describe('Book (e2e)', () => {
+  let ADMIN_TOKEN: string;
   beforeEach(async () => {
     await clearDatabase();
+    const user = await createUser({ role: UserRole.ADMIN });
+    ADMIN_TOKEN = await createToken({ id: user.id, email: user.email });
   });
 
   describe('Create Book:', () => {
     it('should allow admin to create a book', async () => {
-      const user = await createUser({ role: UserRole.ADMIN });
-      const adminToken = await createToken({ id: user.id, email: user.email });
       const requestBody = new BookCreateDto();
       requestBody.name = 'Book Name';
       return request(APP.getHttpServer())
         .post('/books')
         .send(requestBody)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
         .expect(HttpStatus.CREATED)
         .expect((response) => {
           const book = response.body.data;
@@ -48,14 +49,12 @@ describe('Book (e2e)', () => {
         .expect(HttpStatus.FORBIDDEN);
     });
     it('should return an error if name is not provided', async () => {
-      const user = await createUser({ role: UserRole.ADMIN });
-      const adminToken = await createToken({ id: user.id, email: user.email });
       const requestBody = new BookCreateDto();
       requestBody.name = null;
       return request(APP.getHttpServer())
         .post('/books')
         .send(requestBody)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`)
         .expect(HttpStatus.BAD_REQUEST)
         .expect((response) => {
           const validationErrors = response.body.error.errors;
@@ -75,6 +74,37 @@ describe('Book (e2e)', () => {
       BOOKS = await Promise.all([createBook(), createBook(), createBook()]);
     });
 
+    it('should ensure creating book refresh caching', async () => {
+      // Trigger cache with books request
+      await request(APP.getHttpServer())
+        .get('/books')
+        .expect(HttpStatus.OK)
+        .expect(async (response) => {
+          expect(response.body.data.total).toEqual(BOOKS.length);
+
+          const cache: Book[] = await CACHE_ADAPTER.get(
+            bookCacheOptions.FIND_PAGINATED[0],
+          );
+          expect(cache).toBeDefined();
+          expect(cache.length).toEqual(BOOKS.length);
+        });
+
+      // Create a new book
+      await request(APP.getHttpServer())
+        .post('/books')
+        .send({ name: faker.word.words(2) })
+        .set('Authorization', `Bearer ${ADMIN_TOKEN}`);
+
+      return request(APP.getHttpServer())
+        .get('/books')
+        .expect(HttpStatus.OK)
+        .expect((response) => {
+          const paginatedResponse = response.body.data;
+
+          expect(paginatedResponse).toBeDefined();
+          expect(paginatedResponse.results.length).toEqual(BOOKS.length + 1);
+        });
+    });
     it('should return all books', async () => {
       return request(APP.getHttpServer())
         .get('/books')
