@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { QueryOrder } from '@mikro-orm/core';
 import { BookService } from './book.service';
 import { RolesGuard } from '../../../security/guards/roles.guard';
@@ -32,5 +40,11 @@ export class BookController {
     @Query() filterQuery?: BookFilterQuery,
   ) {
     return await this.bookService.findBooks(filterQuery, pagination);
+  }
+
+  @Get(':bookId')
+  @Public()
+  public async getById(@Param('bookId') bookId: string) {
+    return await this.bookService.findById(bookId);
   }
 }

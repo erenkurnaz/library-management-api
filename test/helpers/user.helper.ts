@@ -6,6 +6,7 @@ import {
 import { User, UserRepository, UserRole } from '../../src/database/user';
 import { faker } from '@faker-js/faker';
 import { HashService } from '../../src/security/services/hash.service';
+import { UserBook, UserBookRepository } from '../../src/database/user-book';
 
 export async function createUser({
   email = faker.internet.email(),
@@ -31,4 +32,24 @@ export function createToken({ id, email }: TokenPayload): Promise<string> {
   const tokenService = APP.get<TokenService>(TokenService);
 
   return tokenService.generateAccessToken({ id, email });
+}
+
+export async function createUserBook({
+  user,
+  book,
+  borrowedAt,
+  returnedAt,
+  userScore,
+}: Partial<UserBook>) {
+  const userBookRepository = APP.get<UserBookRepository>(UserBookRepository);
+  const userBook = new UserBook();
+  userBook.user = user;
+  userBook.book = book;
+  userBook.borrowedAt = borrowedAt || new Date();
+  userBook.returnedAt = returnedAt || null;
+  userBook.userScore = userScore || null;
+  const createdUserBook = userBookRepository.create(userBook);
+  await userBookRepository.getEntityManager().flush();
+
+  return createdUserBook;
 }

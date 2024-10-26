@@ -42,4 +42,23 @@ export class BookService {
       total,
     };
   }
+
+  public async findById(bookId: string) {
+    const book = await this.bookRepository.findOneOrFail(
+      { id: bookId },
+      {
+        populate: ['userBook'],
+        populateWhere: {
+          userBook: { userScore: { $ne: null } },
+        },
+        fields: ['id', 'name', 'userBook', 'userBook.userScore', 'avgScore'],
+      },
+    );
+
+    return {
+      id: book.id,
+      name: book.name,
+      score: book.avgScore,
+    };
+  }
 }
