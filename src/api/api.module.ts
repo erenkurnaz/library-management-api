@@ -7,12 +7,15 @@ import { ResponseInterceptor, AllExceptionsFilter } from './interceptors';
 import { AuthenticationController } from './modules/authentication/authentication.controller';
 import { AuthenticationService } from './modules/authentication/authentication.service';
 import { ClassValidationPipe } from './pipes/class-validation.pipe';
+import { BookController } from './modules/book/book.controller';
+import { BookService } from './modules/book/book.service';
 
 @Module({
   imports: [DatabaseModule, SecurityModule],
-  controllers: [AuthenticationController],
+  controllers: [AuthenticationController, BookController],
   providers: [
     AuthenticationService,
+    BookService,
     {
       provide: APP_GUARD,
       useClass: AccessTokenGuard,
