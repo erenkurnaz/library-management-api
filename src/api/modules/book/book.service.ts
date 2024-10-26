@@ -7,6 +7,7 @@ import { BookFilterQuery } from './dto/book-filter-query';
 
 @Injectable()
 export class BookService {
+  private readonly BOOKS_TTL = 30 * 1000;
   constructor(private readonly bookRepository: BookRepository) {}
 
   public async create(bookCreateDto: BookCreateDto) {
@@ -34,6 +35,7 @@ export class BookService {
         offset: pagination?.offset,
         orderBy: { [pagination?.orderBy]: pagination?.order },
         fields: ['id', 'name'],
+        cache: this.BOOKS_TTL,
       },
     );
 
