@@ -121,7 +121,7 @@ App will be running on <a href="http://localhost:3000" target="_blank">http://lo
 #### Book
 `[POST] /books`: Create a new book. [Required Roles: `admin`]
 
-`[GET] /books`: Returns a paginated list of books. (with 30s cache)
+`[GET] /books`: Returns a paginated list of books. (with 5s cache)
 > Query Params:
 > * keyword: Search by book name
 

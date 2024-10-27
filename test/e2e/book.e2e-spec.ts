@@ -11,7 +11,7 @@ import {
 import { UserRole } from '../../src/database/user';
 import { BookCreateDto } from '../../src/api/modules/book/dto/book-create.dto';
 import { createBook } from '../helpers/book.helper';
-import { Book, bookCacheOptions } from '../../src/database/book';
+import { Book } from '../../src/database/book';
 
 describe('Book (e2e)', () => {
   let ADMIN_TOKEN: string;
@@ -74,37 +74,6 @@ describe('Book (e2e)', () => {
       BOOKS = await Promise.all([createBook(), createBook(), createBook()]);
     });
 
-    it('should ensure creating book refresh caching', async () => {
-      // Trigger cache with books request
-      await request(APP.getHttpServer())
-        .get('/books')
-        .expect(HttpStatus.OK)
-        .expect(async (response) => {
-          expect(response.body.data.total).toEqual(BOOKS.length);
-
-          const cache: Book[] = await CACHE_ADAPTER.get(
-            bookCacheOptions.FIND_PAGINATED[0],
-          );
-          expect(cache).toBeDefined();
-          expect(cache.length).toEqual(BOOKS.length);
-        });
-
-      // Create a new book
-      await request(APP.getHttpServer())
-        .post('/books')
-        .send({ name: faker.word.words(2) })
-        .set('Authorization', `Bearer ${ADMIN_TOKEN}`);
-
-      return request(APP.getHttpServer())
-        .get('/books')
-        .expect(HttpStatus.OK)
-        .expect((response) => {
-          const paginatedResponse = response.body.data;
-
-          expect(paginatedResponse).toBeDefined();
-          expect(paginatedResponse.results.length).toEqual(BOOKS.length + 1);
-        });
-    });
     it('should return all books', async () => {
       return request(APP.getHttpServer())
         .get('/books')

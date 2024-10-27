@@ -1,37 +1,38 @@
 import { Injectable } from '@nestjs/common';
+import { Loaded } from '@mikro-orm/core';
 import { BookCreateDto } from './dto/book-create.dto';
-import { Book, bookCacheOptions, BookRepository } from '../../../database/book';
-import { PaginationOptions } from '../../decorators';
+import { Book, BookRepository } from '../../../database/book';
+import { PaginatedResult, PaginationOptions } from '../../decorators';
 import { BookFilterQuery } from './dto/book-filter-query';
 
 @Injectable()
 export class BookService {
+  private readonly BOOKS_TTL = 5 * 1000;
   constructor(private readonly bookRepository: BookRepository) {}
 
   public async create(bookCreateDto: BookCreateDto) {
-    return this.bookRepository.getEntityManager().transactional(async (em) => {
-      const book = new Book();
-      book.name = bookCreateDto.name;
-      const createdBook = em.create(Book, {
-        name: bookCreateDto.name,
-      });
-      await em.flush();
-      await em.clearCache(bookCacheOptions.FIND_PAGINATED[0]);
-      return createdBook;
+    const createdBook = this.bookRepository.create({
+      name: bookCreateDto.name,
     });
+    await this.bookRepository.getEntityManager().flush();
+    return createdBook;
   }
 
   public async findBooks(
     filter?: BookFilterQuery,
     pagination?: PaginationOptions<Book>,
-  ) {
-    const query = filter?.keyword && {
-      name: { $ilike: `%${filter.keyword}%` },
-    };
-
-    const [results, total] = await this.bookRepository.getPaginatedBooks(
-      query,
-      pagination,
+  ): Promise<PaginatedResult<Loaded<Book, never, 'name' | 'id', never>>> {
+    const [results, total] = await this.bookRepository.findAndCount(
+      {
+        ...(filter?.keyword && { name: { $ilike: `%${filter.keyword}%` } }),
+      },
+      {
+        limit: pagination?.limit,
+        offset: pagination?.offset,
+        orderBy: { [pagination?.orderBy]: pagination?.order },
+        fields: ['id', 'name'],
+        cache: this.BOOKS_TTL,
+      },
     );
 
     return {
