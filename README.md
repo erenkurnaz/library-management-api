@@ -16,7 +16,7 @@ docker-compose up -d
 #### 4. Initialize and run the tests
 *Tests will run with the `.env.test` environment file.*
 ```bash
-npm install && npm run migration:seed && npm run test
+npm install && npm run migration:seed && npm run test:e2e
 ```
 
 #### 5. Run the application
